@@ -21,6 +21,7 @@
 		<li><a href="#validation">Validation</a></li>
 		<li><a href="<c:url value="/form" />" title="forms">Forms</a></li>
 		<li><a href="<c:url value="/fileupload" />" title="fileupload">File Upload</a></li>
+		<li><a href="#exceptions">Exception Handling</a></li>
     </ul>
     <div id="simple">
 		<h2>Simple</h2>
@@ -337,6 +338,17 @@
 				<a id="validateErrors" class="textLink" href="<c:url value="/validate?number=3&date=2010-07-01" />">Validate, errors</a>
 			</li>
 		</ul>	
+	</div>
+	<div id="exceptions">
+		<h2>Exception Handling</h2>
+		<p>
+			See the <code>org.springframework.samples.mvc.exceptions</code> package for the @Controller code	
+		</p>
+		<ul>
+			<li>
+				<a id="exception" class="textLink" href="<c:url value="/exception" />">@Controller Exception handling</a>
+			</li>
+		</ul>
 	</div>
 </div>
 <script type="text/javascript" src="<c:url value="/resources/jquery/1.6/jquery.js" />"></script>
