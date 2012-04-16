@@ -14,6 +14,7 @@
 		<li><a href="#simple">Simple</a></li>
 		<li><a href="#mapping">Mapping Requests</a></li>
 		<li><a href="#data">Obtaining Request Data</a></li>
+		<li><a href="#responses">Writing Responses</a></li>
     </ul>
     <div id="simple">
 		<h2>Simple</h2>
@@ -134,6 +135,29 @@
 			</ul>
 		</div>
 	</div>
+	<div id="responses">
+		<h2>Writing Responses</h2>
+		<p>
+			See the <code>org.springframework.samples.mvc.response</code> package for the @Controller code
+		</p>		
+		<ul>
+			<li>
+				<a id="responseBody" class="textLink" href="<c:url value="/response/annotation" />">@ResponseBody</a>			
+			</li>
+			<li>
+				<a id="responseCharsetAccept" class="utf8TextLink" href="<c:url value="/response/charset/accept" />">@ResponseBody (UTF-8 charset requested)</a>
+			</li>
+			<li>
+				<a id="responseCharsetProduce" class="textLink" href="<c:url value="/response/charset/produce" />">@ResponseBody (UTF-8 charset produced)</a>
+			</li>
+			<li>
+				<a id="responseEntityStatus" class="textLink" href="<c:url value="/response/entity/status" />">ResponseEntity (custom status)</a>			
+			</li>
+			<li>
+				<a id="responseEntityHeaders" class="textLink" href="<c:url value="/response/entity/headers" />">ResponseEntity (custom headers)</a>			
+			</li>
+		</ul>	
+	</div>
 </div>
 <script type="text/javascript" src="<c:url value="/resources/jquery/1.6/jquery.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/jqueryform/2.8/jquery.form.js" />"></script>
@@ -205,6 +229,12 @@ $(document).ready(function() {
 		var form = $(this);
 		var button = form.children(":first");
 		$.ajax({ type: "POST", url: form.attr("action"), data: "foo", contentType: "text/plain", dataType: "text", success: function(text) { MvcUtil.showSuccessResponse(text, button); }, error: function(xhr) { MvcUtil.showErrorResponse(xhr.responseText, button); }});
+		return false;
+	});
+
+	$("a.utf8TextLink").click(function(){
+		var link = $(this);
+		$.ajax({ url: link.attr("href"), dataType: "text", beforeSend: function(req) { req.setRequestHeader("Accept", "text/plain;charset=UTF-8"); }, success: function(text) { MvcUtil.showSuccessResponse(text, link); }, error: function(xhr) { MvcUtil.showErrorResponse(xhr.responseText, link); }});
 		return false;
 	});
 });
