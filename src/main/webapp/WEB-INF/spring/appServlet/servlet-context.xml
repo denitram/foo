@@ -9,7 +9,7 @@
 	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
 	
 	<!-- Enables the Spring MVC @Controller programming model -->
-	<annotation-driven>
+	<annotation-driven conversion-service="conversionService">
 		<argument-resolvers>
 			<beans:bean class="org.springframework.samples.mvc.data.custom.CustomArgumentResolver"/>
 		</argument-resolvers>
