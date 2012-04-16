@@ -22,6 +22,7 @@
 		<li><a href="<c:url value="/form" />" title="forms">Forms</a></li>
 		<li><a href="<c:url value="/fileupload" />" title="fileupload">File Upload</a></li>
 		<li><a href="#exceptions">Exception Handling</a></li>
+		<li><a href="#redirect">Redirecting</a></li>
     </ul>
     <div id="simple">
 		<h2>Simple</h2>
@@ -347,6 +348,20 @@
 		<ul>
 			<li>
 				<a id="exception" class="textLink" href="<c:url value="/exception" />">@Controller Exception handling</a>
+			</li>
+		</ul>
+	</div>
+	<div id="redirect">
+		<h2>Redirecting</h2>
+		<p>
+			See the <code>org.springframework.samples.mvc.redirect</code> package for the @Controller code	
+		</p>
+		<ul>
+			<li>
+				<a href="<c:url value="/redirect/uriTemplate" />">URI Template String</a>
+			</li>
+			<li>
+				<a href="<c:url value="/redirect/uriComponentsBuilder" />">UriComponentsBuilder</a>
 			</li>
 		</ul>
 	</div>
