@@ -15,6 +15,7 @@
 		<li><a href="#mapping">Mapping Requests</a></li>
 		<li><a href="#data">Obtaining Request Data</a></li>
 		<li><a href="#responses">Writing Responses</a></li>
+		<li><a href="#messageconverters">Message Converters</a></li>
     </ul>
     <div id="simple">
 		<h2>Simple</h2>
@@ -158,6 +159,85 @@
 			</li>
 		</ul>	
 	</div>
+	<div id="messageconverters">
+		<h2>Http Message Converters</h2>
+		<p>
+			See the <code>org.springframework.samples.mvc.messageconverters</code> package for the @Controller code
+		</p>	
+		<div id="stringMessageConverter">
+			<h3>StringHttpMessageConverter</h3>
+			<ul>
+				<li>
+					<form id="readString" class="textForm" action="<c:url value="/messageconverters/string" />" method="post">
+						<input id="readStringSubmit" type="submit" value="Read a String" />
+					</form>
+				</li>
+				<li>
+					<a id="writeString" class="textLink" href="<c:url value="/messageconverters/string" />">Write a String</a>
+				</li>
+			</ul>
+			<h3>FormHttpMessageConverter</h3>
+			<ul>
+				<li>
+					<form id="readForm" action="<c:url value="/messageconverters/form" />" method="post">
+						<input id="readFormSubmit" type="submit" value="Read Form Data" />		
+					</form>
+				</li>
+				<li>
+					<a id="writeForm" href="<c:url value="/messageconverters/form" />">Write Form Data</a>
+				</li>
+			</ul>
+			<h3>Jaxb2RootElementHttpMessageConverter</h3>
+			<ul>
+				<li>
+					<form id="readXml" class="readXmlForm" action="<c:url value="/messageconverters/xml" />" method="post">
+						<input id="readXmlSubmit" type="submit" value="Read XML" />		
+					</form>
+				</li>
+				<li>
+					<a id="writeXml" class="writeXmlLink" href="<c:url value="/messageconverters/xml" />">Write XML</a>
+				</li>
+			</ul>
+			<h3>MappingJacksonHttpMessageConverter</h3>
+			<ul>
+				<li>
+					<form id="readJson" class="readJsonForm" action="<c:url value="/messageconverters/json" />" method="post">
+						<input id="readJsonSubmit" type="submit" value="Read JSON" />	
+					</form>
+				</li>
+				<li>
+					<form id="readJsonInvalid" class="readJsonForm invalid" action="<c:url value="/messageconverters/json" />" method="post">
+						<input id="readInvalidJsonSubmit" type="submit" value="Read invalid JSON (400 response code)" />	
+					</form>
+				</li>
+				<li>
+					<a id="writeJson" class="writeJsonLink" href="<c:url value="/messageconverters/json" />">Write JSON</a>
+				</li>
+			</ul>
+			<h3>AtomFeedHttpMessageConverter</h3>
+			<ul>
+				<li>
+					<form id="readAtom" action="<c:url value="/messageconverters/atom" />" method="post">
+						<input id="readAtomSubmit" type="submit" value="Read Atom" />		
+					</form>
+				</li>
+				<li>
+					<a id="writeAtom" href="<c:url value="/messageconverters/atom" />">Write Atom</a>
+				</li>
+			</ul>
+			<h3>RssChannelHttpMessageConverter</h3>
+			<ul>
+				<li>
+					<form id="readRss" action="<c:url value="/messageconverters/rss" />" method="post">
+						<input id="readRssSubmit" type="submit" value="Read Rss" />	
+					</form>
+				</li>
+				<li>
+					<a id="writeRss" href="<c:url value="/messageconverters/rss" />">Write Rss</a>
+				</li>
+			</ul>		
+		</div>
+	</div>
 </div>
 <script type="text/javascript" src="<c:url value="/resources/jquery/1.6/jquery.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/jqueryform/2.8/jquery.form.js" />"></script>
@@ -183,6 +263,19 @@
 			responseElement = $("#" + responseElementId);
 		}
 		responseElement.fadeIn("slow");
+	};
+	MvcUtil.xmlencode = function(xml) {
+		//for IE 
+		var text;
+		if (window.ActiveXObject) {
+		    text = xml.xml;
+		 }
+		// for Mozilla, Firefox, Opera, etc.
+		else {
+		   text = (new XMLSerializer()).serializeToString(xml);
+		}			
+		    return text.replace(/\&/g,'&'+'amp;').replace(/</g,'&'+'lt;')
+	        .replace(/>/g,'&'+'gt;').replace(/\'/g,'&'+'apos;').replace(/\"/g,'&'+'quot;');
 	};
 </script>	
 <script type="text/javascript">
@@ -235,6 +328,88 @@ $(document).ready(function() {
 	$("a.utf8TextLink").click(function(){
 		var link = $(this);
 		$.ajax({ url: link.attr("href"), dataType: "text", beforeSend: function(req) { req.setRequestHeader("Accept", "text/plain;charset=UTF-8"); }, success: function(text) { MvcUtil.showSuccessResponse(text, link); }, error: function(xhr) { MvcUtil.showErrorResponse(xhr.responseText, link); }});
+		return false;
+	});
+	
+	$("#readForm").submit(function() {
+		var form = $(this);
+		var button = form.children(":first");
+		$.ajax({ type: "POST", url: form.attr("action"), data: "foo=bar&fruit=apple", contentType: "application/x-www-form-urlencoded", dataType: "text", success: function(text) { MvcUtil.showSuccessResponse(text, button); }, error: function(xhr) { MvcUtil.showErrorResponse(xhr.responseText, button); }});
+		return false;
+	});
+
+	$("#writeForm").click(function() {
+		var link = $(this);
+		$.ajax({ url: this.href, dataType: "text", beforeSend: function(req) { req.setRequestHeader("Accept", "application/x-www-form-urlencoded"); }, success: function(form) { MvcUtil.showSuccessResponse(form, link); }, error: function(xhr) { MvcUtil.showErrorResponse(xhr.responseText, link); }});					
+		return false;
+	});
+
+	$("form.readXmlForm").submit(function() {
+		var form = $(this);
+		var button = form.children(":first");
+		$.ajax({ type: "POST", url: form.attr("action"), data: "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><javaBean><foo>bar</foo><fruit>apple</fruit></javaBean>", contentType: "application/xml", dataType: "text", success: function(text) { MvcUtil.showSuccessResponse(text, button); }, error: function(xhr) { MvcUtil.showErrorResponse(xhr.responseText, button); }});
+		return false;
+	});
+
+	$("a.writeXmlLink").click(function() {
+		var link = $(this);
+		$.ajax({ url: link.attr("href"),
+			beforeSend: function(req) { 
+				req.setRequestHeader("Accept", "application/application+xml");
+			},
+			success: function(xml) {
+				MvcUtil.showSuccessResponse(MvcUtil.xmlencode(xml), link);
+			},
+			error: function(xhr) { 
+				MvcUtil.showErrorResponse(xhr.responseText, link);
+			}
+		});
+		return false;
+	});					
+
+	$("#readAtom").submit(function() {
+		var form = $(this);
+		var button = form.children(":first");
+		$.ajax({ type: "POST", url: form.attr("action"), data: '<?xml version="1.0" encoding="UTF-8"?> <feed xmlns="http://www.w3.org/2005/Atom"><title>My Atom feed</title></feed>', contentType: "application/atom+xml", dataType: "text", success: function(text) { MvcUtil.showSuccessResponse(text, button); }, error: function(xhr) { MvcUtil.showErrorResponse(xhr.responseText, button); }});
+		return false;
+	});
+
+	$("#writeAtom").click(function() {
+		var link = $(this);
+		$.ajax({ url: link.attr("href"),
+			beforeSend: function(req) { 
+				req.setRequestHeader("Accept", "application/atom+xml");
+			},
+			success: function(feed) {
+				MvcUtil.showSuccessResponse(MvcUtil.xmlencode(feed), link);
+			},
+			error: function(xhr) { 
+				MvcUtil.showErrorResponse(xhr.responseText, link);
+			}
+		});
+		return false;
+	});
+	
+	$("#readRss").submit(function() {
+		var form = $(this);
+		var button = form.children(":first");
+		$.ajax({ type: "POST", url: form.attr("action"), data: '<?xml version="1.0" encoding="UTF-8"?> <rss version="2.0"><channel><title>My RSS feed</title></channel></rss>', contentType: "application/rss+xml", dataType: "text", success: function(text) { MvcUtil.showSuccessResponse(text, button); }, error: function(xhr) { MvcUtil.showErrorResponse(xhr.responseText, button); }});
+		return false;
+	});
+
+	$("#writeRss").click(function() {
+		var link = $(this);	
+		$.ajax({ url: link.attr("href"),
+			beforeSend: function(req) { 
+				req.setRequestHeader("Accept", "application/rss+xml");
+			},
+			success: function(feed) {
+				MvcUtil.showSuccessResponse(MvcUtil.xmlencode(feed), link);
+			},
+			error: function(xhr) { 
+				MvcUtil.showErrorResponse(xhr.responseText, link);
+			}
+		});
 		return false;
 	});
 });
