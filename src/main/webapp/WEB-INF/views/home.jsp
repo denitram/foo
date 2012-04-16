@@ -19,6 +19,7 @@
 		<li><a href="#views">Rendering Views</a></li>
 		<li><a href="#convert">Type Conversion</a></li>
 		<li><a href="#validation">Validation</a></li>
+		<li><a href="<c:url value="/form" />" title="forms">Forms</a></li>
     </ul>
     <div id="simple">
 		<h2>Simple</h2>
